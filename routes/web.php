@@ -40,6 +40,42 @@ Route::middleware(['auth'])->group(function () {
         ->name('two-factor.show');
 });
 
+// Resident routes (authenticated residents only)
+Route::middleware(['auth', 'verified', 'resident'])->prefix('resident')->name('resident.')->group(function () {
+    Route::get('dashboard', function () {
+        return view('resident.dashboard');
+    })->name('dashboard');
+    
+    Route::get('profile', function () {
+        return view('resident.profile.show');
+    })->name('profile.show');
+    
+    Route::get('profile/edit', function () {
+        return view('resident.profile.edit');
+    })->name('profile.edit');
+    
+    Route::put('profile', [\App\Http\Controllers\Resident\ProfileController::class, 'update'])->name('profile.update');
+    
+    Route::get('gate-logs', function () {
+        return view('resident.gate-logs');
+    })->name('gate-logs');
+    
+    Route::get('notifications', function () {
+        return view('resident.notifications');
+    })->name('notifications');
+    
+    Route::post('notifications/{notification}/mark-read', [\App\Http\Controllers\Resident\NotificationController::class, 'markAsRead'])->name('notifications.mark-read');
+    Route::post('notifications/mark-all-read', [\App\Http\Controllers\Resident\NotificationController::class, 'markAllAsRead'])->name('notifications.mark-all-read');
+    
+    Route::get('update-requests', function () {
+        return view('resident.update-requests');
+    })->name('update-requests');
+    
+    Route::get('help', function () {
+        return view('resident.help');
+    })->name('help');
+});
+
 // Admin routes
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('residents', ResidentsManagement::class)->name('residents');
