@@ -14,6 +14,14 @@
             <flux:navlist variant="outline">
                 <flux:navlist.group :heading="__('Platform')" class="grid">
                     <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
+                    
+                    @if(auth()->user()->isAdmin())
+                        <flux:navlist.item icon="users" :href="route('admin.residents')" :current="request()->routeIs('admin.residents')" wire:navigate>{{ __('Residents') }}</flux:navlist.item>
+                        <flux:navlist.item icon="clipboard-document-list" :href="route('admin.gate-logs')" :current="request()->routeIs('admin.gate-logs')" wire:navigate>{{ __('Gate Logs') }}</flux:navlist.item>
+                        <flux:navlist.item icon="document-check" :href="route('admin.update-requests')" :current="request()->routeIs('admin.update-requests')" wire:navigate>{{ __('Update Requests') }}</flux:navlist.item>
+                        <flux:navlist.item icon="chart-bar" :href="route('admin.reports')" :current="request()->routeIs('admin.reports')" wire:navigate>{{ __('Reports') }}</flux:navlist.item>
+                        <flux:navlist.item icon="bell" :href="route('admin.notifications')" :current="request()->routeIs('admin.notifications')" wire:navigate>{{ __('Notifications') }}</flux:navlist.item>
+                    @endif
                 </flux:navlist.group>
             </flux:navlist>
 

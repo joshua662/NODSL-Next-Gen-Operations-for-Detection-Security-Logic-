@@ -23,6 +23,9 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
+        'phone',
+        'plate_number',
     ];
 
     /**
@@ -48,6 +51,38 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Get the resident profile for the user.
+     */
+    public function resident(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(Resident::class);
+    }
+
+    /**
+     * Get the notifications for the user.
+     */
+    public function notifications(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(\App\Models\Notification::class);
+    }
+
+    /**
+     * Check if the user is an admin.
+     */
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
+    /**
+     * Check if the user is a resident.
+     */
+    public function isResident(): bool
+    {
+        return $this->role === 'resident';
     }
 
     /**
