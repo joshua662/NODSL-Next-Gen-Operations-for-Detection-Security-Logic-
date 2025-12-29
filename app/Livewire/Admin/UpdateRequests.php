@@ -13,6 +13,8 @@ class UpdateRequests extends Component
 
     public $statusFilter = 'pending';
     public $typeFilter = '';
+    public $selectedRequest = null;
+    public $showDetailModal = false;
 
     public function mount()
     {
@@ -118,6 +120,19 @@ class UpdateRequests extends Component
         ]);
 
         session()->flash('message', 'Request rejected.');
+        $this->closeDetailModal();
+    }
+
+    public function openDetailModal($requestId)
+    {
+        $this->selectedRequest = UpdateRequest::with(['resident', 'reviewer'])->findOrFail($requestId);
+        $this->showDetailModal = true;
+    }
+
+    public function closeDetailModal()
+    {
+        $this->showDetailModal = false;
+        $this->selectedRequest = null;
     }
 
     public function render()

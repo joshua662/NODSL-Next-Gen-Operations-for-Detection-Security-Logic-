@@ -11,6 +11,8 @@ class GuestAccessRequests extends Component
     use WithPagination;
 
     public $statusFilter = 'pending';
+    public $selectedRequest = null;
+    public $showDetailModal = false;
 
     public function mount()
     {
@@ -49,6 +51,7 @@ class GuestAccessRequests extends Component
         ]);
 
         session()->flash('message', 'Guest access request approved successfully.');
+        $this->closeDetailModal();
     }
 
     public function reject($requestId)
@@ -77,6 +80,19 @@ class GuestAccessRequests extends Component
         ]);
 
         session()->flash('message', 'Guest access request rejected.');
+        $this->closeDetailModal();
+    }
+
+    public function openDetailModal($requestId)
+    {
+        $this->selectedRequest = UpdateRequest::with(['resident', 'reviewer'])->findOrFail($requestId);
+        $this->showDetailModal = true;
+    }
+
+    public function closeDetailModal()
+    {
+        $this->showDetailModal = false;
+        $this->selectedRequest = null;
     }
 
     public function render()

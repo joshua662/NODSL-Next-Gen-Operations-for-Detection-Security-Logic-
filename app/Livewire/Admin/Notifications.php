@@ -2,7 +2,6 @@
 
 namespace App\Livewire\Admin;
 
-use App\Models\GateLog;
 use Livewire\Component;
 use Livewire\WithPagination;
 

@@ -13,6 +13,8 @@ class ResidentsManagement extends Component
 
     public $search = '';
     public $showModal = false;
+    public $showDeleteModal = false;
+    public $deletingResident = null;
     public $editingResident = null;
     public $name = '';
     public $age = '';
@@ -154,11 +156,26 @@ class ResidentsManagement extends Component
         $this->closeModal();
     }
 
-    public function delete($residentId)
+    public function openDeleteModal($residentId)
     {
-        $resident = Resident::findOrFail($residentId);
-        $resident->user->delete(); // This will cascade delete the resident
-        session()->flash('message', 'Resident deleted successfully.');
+        $this->deletingResident = Resident::with('user')->findOrFail($residentId);
+        $this->showDeleteModal = true;
+    }
+
+    public function closeDeleteModal()
+    {
+        $this->showDeleteModal = false;
+        $this->deletingResident = null;
+    }
+
+    public function delete()
+    {
+        if ($this->deletingResident) {
+            $residentName = $this->deletingResident->name;
+            $this->deletingResident->user->delete(); // This will cascade delete the resident
+            session()->flash('message', "Resident '{$residentName}' deleted successfully.");
+            $this->closeDeleteModal();
+        }
     }
 
     public function render()
