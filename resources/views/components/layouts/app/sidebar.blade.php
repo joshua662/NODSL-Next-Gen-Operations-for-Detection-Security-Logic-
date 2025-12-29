@@ -19,6 +19,7 @@
                         <flux:navlist.item icon="users" :href="route('admin.residents')" :current="request()->routeIs('admin.residents')" wire:navigate>{{ __('Residents') }}</flux:navlist.item>
                         <flux:navlist.item icon="clipboard-document-list" :href="route('admin.gate-logs')" :current="request()->routeIs('admin.gate-logs')" wire:navigate>{{ __('Gate Logs') }}</flux:navlist.item>
                         <flux:navlist.item icon="document-check" :href="route('admin.update-requests')" :current="request()->routeIs('admin.update-requests')" wire:navigate>{{ __('Update Requests') }}</flux:navlist.item>
+                        <flux:navlist.item icon="document-plus" :href="route('admin.guest-access-requests')" :current="request()->routeIs('admin.guest-access-requests')" wire:navigate>{{ __('Guest Access') }}</flux:navlist.item>
                         <flux:navlist.item icon="chart-bar" :href="route('admin.reports')" :current="request()->routeIs('admin.reports')" wire:navigate>{{ __('Reports') }}</flux:navlist.item>
                         <flux:navlist.item icon="bell" :href="route('admin.notifications')" :current="request()->routeIs('admin.notifications')" wire:navigate>{{ __('Notifications') }}</flux:navlist.item>
                     @endif
@@ -28,6 +29,7 @@
                         <flux:navlist.item icon="chart-bar" :href="route('resident.gate-logs')" :current="request()->routeIs('resident.gate-logs')" wire:navigate>{{ __('Gate Logs') }}</flux:navlist.item>
                         <flux:navlist.item icon="bell" :href="route('resident.notifications')" :current="request()->routeIs('resident.notifications')" wire:navigate>{{ __('Notifications') }}</flux:navlist.item>
                         <flux:navlist.item icon="document-check" :href="route('resident.update-requests')" :current="request()->routeIs('resident.update-requests')" wire:navigate>{{ __('Update Requests') }}</flux:navlist.item>
+                        <flux:navlist.item icon="document-plus" :href="route('resident.guest-access.create')" :current="request()->routeIs('resident.guest-access.*')" wire:navigate>{{ __('Guest Access') }}</flux:navlist.item>
                         <flux:navlist.item icon="question-mark-circle" :href="route('resident.help')" :current="request()->routeIs('resident.help')" wire:navigate>{{ __('Help & Support') }}</flux:navlist.item>
                     @endif
                 </flux:navlist.group>

@@ -1,7 +1,7 @@
 <x-layouts.app :title="__('Edit Profile')">
-    <div class="flex h-full w-full flex-1 flex-col gap-4">
+    <div class="flex h-full w-full flex-1 flex-col gap-4 items-center justify-center">
         <!-- Header -->
-        <div class="mb-6">
+        <div class="mb-6 text-center">
             <h1 class="text-3xl font-bold text-zinc-900 dark:text-zinc-100">✏️ Edit Profile</h1>
             <p class="text-zinc-600 dark:text-zinc-400 mt-1">Update your personal and vehicle information (changes require admin approval)</p>
         </div>
@@ -10,7 +10,7 @@
             $resident = auth()->user()->resident;
         @endphp
 
-        <div class="max-w-2xl">
+        <div class="max-w-2xl w-full">
             <form action="{{ route('resident.profile.update') ?? '#' }}" method="POST" class="border border-zinc-200 dark:border-zinc-700 rounded-xl p-6 bg-white dark:bg-zinc-800 space-y-6">
                 @csrf
                 @method('PUT')

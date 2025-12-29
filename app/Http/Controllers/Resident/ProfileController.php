@@ -78,4 +78,43 @@ class ProfileController extends Controller
         return redirect()->route('resident.update-requests')
             ->with('success', 'Your profile changes have been submitted for admin approval. You will be notified once they are processed.');
     }
+
+    /**
+     * Create guest visitor access request (for another car owner)
+     */
+    public function storeGuestAccess(Request $request)
+    {
+        $user = $request->user();
+        $resident = $user->resident;
+
+        if (!$resident) {
+            return redirect()->back()->with('error', 'Resident profile not found');
+        }
+
+        // Validate incoming data for guest vehicle
+        $validated = $request->validate([
+            'guest_name' => 'required|string|max:255',
+            'guest_age' => 'sometimes|nullable|integer|min:1|max:150',
+            'guest_contact_number' => 'required|string|max:20',
+            'guest_plate_number' => 'required|string|max:20',
+            'guest_car_model' => 'required|string|max:255',
+            'guest_car_color' => 'sometimes|nullable|string|max:100',
+            'guest_address' => 'sometimes|nullable|string',
+            'access_reason' => 'required|string|max:500',
+            'access_date' => 'required|date|after_or_equal:today',
+        ]);
+
+        // Create guest access request
+        UpdateRequest::create([
+            'resident_id' => $resident->id,
+            'status' => 'pending',
+            'requested_changes' => array_merge($validated, [
+                'request_type' => 'guest_access',
+                'host_name' => $resident->name,
+            ]),
+        ]);
+
+        return redirect()->route('resident.update-requests')
+            ->with('success', 'Your guest access request has been submitted for admin approval. The visitor will be able to enter once approved.');
+    }
 }

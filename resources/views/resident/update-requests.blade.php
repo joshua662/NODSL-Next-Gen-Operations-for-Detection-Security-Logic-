@@ -10,15 +10,61 @@
             $updateRequests = auth()->user()->resident->updateRequests()->latest()->paginate(10);
         @endphp
 
-        <!-- Submit New Request Button -->
-        <div class="mb-6">
-            <a href="{{ route('resident.profile.edit') }}" class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition">
-                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M10.5 1.5H19a1 1 0 011 1v16a1 1 0 01-1 1H1a1 1 0 01-1-1V2.5a1 1 0 011-1h9m0 0V1a1 1 0 112 0v.5m0 0a1 1 0 112 0"/>
-                </svg>
-                Submit New Request
-            </a>
+        <!-- Two Action Cards Section -->
+        <div class="grid md:grid-cols-2 gap-6 mb-6">
+            <!-- Profile Update Card -->
+            <div class="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/30 dark:to-blue-900/50 border-2 border-blue-200 dark:border-blue-700 rounded-xl p-6">
+                <div class="flex items-start justify-between mb-4">
+                    <div>
+                        <h3 class="text-xl font-bold text-blue-900 dark:text-blue-100">📝 Update Profile</h3>
+                        <p class="text-sm text-blue-800 dark:text-blue-300 mt-1">Modify your personal information</p>
+                    </div>
+                    <span class="inline-block px-3 py-1 bg-blue-200 dark:bg-blue-800 text-blue-900 dark:text-blue-100 text-xs font-bold rounded-full">Personal</span>
+                </div>
+                
+                <ul class="text-sm text-blue-800 dark:text-blue-300 space-y-2 mb-6">
+                    <li>✓ Update name or contact information</li>
+                    <li>✓ Change vehicle details</li>
+                    <li>✓ Modify residential address</li>
+                    <li>✓ Requires admin approval</li>
+                </ul>
+                
+                <a href="{{ route('resident.profile.edit') }}" class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition w-full justify-center">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10.5 1.5H19a1 1 0 011 1v16a1 1 0 01-1 1H1a1 1 0 01-1-1V2.5a1 1 0 011-1h9m0 0V1a1 1 0 112 0v.5m0 0a1 1 0 112 0"/>
+                    </svg>
+                    Submit Profile Update
+                </a>
+            </div>
+
+            <!-- Guest Access Card -->
+            <div class="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/30 dark:to-purple-900/50 border-2 border-purple-200 dark:border-purple-700 rounded-xl p-6">
+                <div class="flex items-start justify-between mb-4">
+                    <div>
+                        <h3 class="text-xl font-bold text-purple-900 dark:text-purple-100">🚗 Request Guest Access</h3>
+                        <p class="text-sm text-purple-800 dark:text-purple-300 mt-1">Allow visitor vehicles to enter</p>
+                    </div>
+                    <span class="inline-block px-3 py-1 bg-purple-200 dark:bg-purple-800 text-purple-900 dark:text-purple-100 text-xs font-bold rounded-full">Visitor</span>
+                </div>
+                
+                <ul class="text-sm text-purple-800 dark:text-purple-300 space-y-2 mb-6">
+                    <li>✓ Allow guest vehicles to pass gate</li>
+                    <li>✓ Capture visitor vehicle info</li>
+                    <li>✓ Set specific access dates</li>
+                    <li>✓ Requires admin approval</li>
+                </ul>
+                
+                <a href="{{ route('resident.guest-access.create') }}" class="inline-flex items-center gap-2 px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium transition w-full justify-center">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M8 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM15 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"/>
+                        <path d="M3 4a1 1 0 00-1 1v10a1 1 0 001 1h1.05a2.5 2.5 0 014.9 0H10a1 1 0 001-1V5a1 1 0 00-1-1H3zM14 7a1 1 0 00-1 1v6.05A2.5 2.5 0 0115.95 16H17a1 1 0 001-1v-5a1 1 0 00-.293-.707l-2-2A1 1 0 0015 7h-1z"/>
+                    </svg>
+                    Request Guest Access
+                </a>
+            </div>
         </div>
+
+        <!-- Submit New Request Button -->
 
         <!-- Summary Stats -->
         <div class="grid gap-4 md:grid-cols-4 mb-6">
@@ -74,15 +120,24 @@
                             <div class="grid gap-3 md:grid-cols-2">
                                 @php
                                     $changes = is_array($request->requested_changes) ? $request->requested_changes : json_decode($request->requested_changes, true);
+                                    // Filter out guest access fields and metadata
+                                    $displayChanges = array_filter($changes, function($key) {
+                                        $excludeFields = ['request_type', 'guest_name', 'guest_age', 'guest_contact_number', 'guest_address', 'guest_plate_number', 'guest_car_model', 'guest_car_color', 'access_date', 'access_reason'];
+                                        return !in_array($key, $excludeFields);
+                                    }, ARRAY_FILTER_USE_KEY);
                                 @endphp
-                                @if($changes)
-                                    @foreach($changes as $field => $value)
+                                @if($displayChanges)
+                                    @foreach($displayChanges as $field => $value)
                                         <div class="border border-zinc-200 dark:border-zinc-700 p-3 rounded">
                                             <p class="text-xs font-semibold text-zinc-600 dark:text-zinc-400 uppercase mb-1">
                                                 {{ str_replace('_', ' ', $field) }}
                                             </p>
                                             <p class="text-sm text-zinc-900 dark:text-zinc-100 break-words">
-                                                {{ $value ?? '-' }}
+                                                @if($field === 'is_personal_data_request' && $value)
+                                                    <span class="inline-block px-2 py-1 bg-blue-200 dark:bg-blue-800 text-blue-900 dark:text-blue-100 text-xs rounded">🔐 Access to Other Owner's Personal Data</span>
+                                                @else
+                                                    {{ $value ?? '-' }}
+                                                @endif
                                             </p>
                                         </div>
                                     @endforeach
@@ -137,13 +192,26 @@
 
                         <!-- Action Buttons -->
                         @if($request->status === 'rejected')
-                            <div class="mt-4 pt-4 border-t border-zinc-200 dark:border-zinc-700">
-                                <a href="{{ route('resident.profile.edit') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition">
+                            <div class="mt-4 pt-4 border-t border-zinc-200 dark:border-zinc-700 flex gap-3">
+                                <a href="{{ route('resident.profile.edit') }}" class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-semibold transition shadow-sm hover:shadow-md">
                                     <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                                         <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.829.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/>
                                     </svg>
-                                    Try Again
+                                    Edit & Resubmit
                                 </a>
+                                <button class="flex items-center justify-center gap-2 px-4 py-3 bg-red-100 hover:bg-red-200 dark:bg-red-900/30 hover:dark:bg-red-900/50 text-red-700 dark:text-red-400 rounded-lg text-sm font-semibold transition" title="Delete request">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        @elseif($request->status === 'pending')
+                            <div class="mt-4 pt-4 border-t border-zinc-200 dark:border-zinc-700 flex justify-end">
+                                <button class="flex items-center justify-center gap-2 px-4 py-3 bg-red-100 hover:bg-red-200 dark:bg-red-900/30 hover:dark:bg-red-900/50 text-red-700 dark:text-red-400 rounded-lg text-sm font-semibold transition" title="Delete request">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                                    </svg>
+                                </button>
                             </div>
                         @endif
                     </div>
@@ -168,15 +236,30 @@
         </div>
 
         <!-- Help Section -->
-        <div class="mt-8 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
-            <h3 class="text-sm font-semibold text-blue-900 dark:text-blue-200 mb-2">ℹ️ How It Works</h3>
-            <ol class="text-sm text-blue-800 dark:text-blue-300 space-y-1 list-decimal list-inside">
-                <li>Click "Submit New Request" to edit your profile</li>
-                <li>Make the desired changes (name, contact, vehicle info, etc.)</li>
-                <li>Submit your changes for admin review</li>
-                <li>Track the approval status here</li>
-                <li>Once approved, your changes will be active in the system</li>
-            </ol>
+        <div class="mt-8 grid md:grid-cols-2 gap-6">
+            <!-- Profile Update Help -->
+            <div class="p-6 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+                <h3 class="text-lg font-semibold text-blue-900 dark:text-blue-200 mb-3">📝 Profile Update Guide</h3>
+                <ol class="text-sm text-blue-800 dark:text-blue-300 space-y-2 list-decimal list-inside">
+                    <li>Click "Submit Profile Update" button</li>
+                    <li>Edit your personal or vehicle information</li>
+                    <li>Submit changes for admin review</li>
+                    <li>Wait for approval notification</li>
+                    <li>Changes become active once approved</li>
+                </ol>
+            </div>
+
+            <!-- Guest Access Help -->
+            <div class="p-6 bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-lg">
+                <h3 class="text-lg font-semibold text-purple-900 dark:text-purple-200 mb-3">🚗 Guest Access Guide</h3>
+                <ol class="text-sm text-purple-800 dark:text-purple-300 space-y-2 list-decimal list-inside">
+                    <li>Click "Request Guest Access" button</li>
+                    <li>Fill in guest vehicle owner details</li>
+                    <li>Enter guest vehicle information</li>
+                    <li>Set access date and reason</li>
+                    <li>Submit for admin approval</li>
+                </ol>
+            </div>
         </div>
     </div>
 </x-layouts.app>

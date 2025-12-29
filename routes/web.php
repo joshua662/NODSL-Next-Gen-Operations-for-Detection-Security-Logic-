@@ -6,6 +6,7 @@ use App\Livewire\Admin\Notifications as AdminNotifications;
 use App\Livewire\Admin\Reports;
 use App\Livewire\Admin\ResidentsManagement;
 use App\Livewire\Admin\UpdateRequests;
+use App\Livewire\Admin\GuestAccessRequests;
 use App\Livewire\Settings\Appearance;
 use App\Livewire\Settings\Password;
 use App\Livewire\Settings\Profile;
@@ -56,6 +57,12 @@ Route::middleware(['auth', 'verified', 'resident'])->prefix('resident')->name('r
     
     Route::put('profile', [\App\Http\Controllers\Resident\ProfileController::class, 'update'])->name('profile.update');
     
+    Route::get('guest-access', function () {
+        return view('resident.guest-access');
+    })->name('guest-access.create');
+    
+    Route::post('guest-access', [\App\Http\Controllers\Resident\ProfileController::class, 'storeGuestAccess'])->name('guest-access.store');
+    
     Route::get('gate-logs', function () {
         return view('resident.gate-logs');
     })->name('gate-logs');
@@ -81,6 +88,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('residents', ResidentsManagement::class)->name('residents');
     Route::get('gate-logs', GateLogs::class)->name('gate-logs');
     Route::get('update-requests', UpdateRequests::class)->name('update-requests');
+    Route::get('guest-access-requests', GuestAccessRequests::class)->name('guest-access-requests');
     Route::get('reports', Reports::class)->name('reports');
     Route::get('reports/export', [ReportsController::class, 'exportCsv'])->name('reports.export');
     Route::get('notifications', AdminNotifications::class)->name('notifications');
