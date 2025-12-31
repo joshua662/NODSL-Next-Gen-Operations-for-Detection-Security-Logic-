@@ -2,7 +2,10 @@
     <style>
         [x-cloak] { display: none !important; }
     </style>
-    <div class="flex h-full w-full flex-1 flex-col gap-4">
+    <div class="flex h-full w-full flex-1 flex-col gap-4" x-data="{ 
+        showProfileModal: false, 
+        showSuccessModal: @js(session()->has('success'))
+    }" x-init="@if(session()->has('success')) setTimeout(() => { showProfileModal = false; showSuccessModal = true }, 100); setTimeout(() => { showSuccessModal = false }, 3000) @endif">
         <!-- Header -->
         <div class="mb-6">
             <h1 class="text-3xl font-bold text-zinc-900 dark:text-zinc-100">📤 Update Requests</h1>
@@ -31,12 +34,12 @@
                     <li>✓ Requires admin approval</li>
                 </ul>
                 
-                <a href="{{ route('resident.profile.edit') }}" class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition w-full justify-center">
+                <button @click="showProfileModal = true" class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition w-full justify-center">
                     <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                         <path d="M10.5 1.5H19a1 1 0 011 1v16a1 1 0 01-1 1H1a1 1 0 01-1-1V2.5a1 1 0 011-1h9m0 0V1a1 1 0 112 0v.5m0 0a1 1 0 112 0"/>
                     </svg>
                     Submit Profile Update
-                </a>
+                </button>
             </div>
         </div>
 
@@ -260,6 +263,198 @@
                     <li>Wait for approval notification</li>
                     <li>Changes become active once approved</li>
                 </ol>
+            </div>
+        </div>
+
+        <!-- Edit Profile Modal -->
+        <div x-show="showProfileModal" x-cloak @click.away="showProfileModal = false" class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+            <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:p-0">
+                <div class="fixed inset-0 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-sm transition-opacity" @click="showProfileModal = false"></div>
+                <div class="relative inline-block align-middle bg-white dark:bg-zinc-800 rounded-2xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:max-w-2xl sm:w-full" @click.stop>
+                    <div class="px-8 pt-8 pb-6">
+                        @php
+                            $resident = auth()->user()->resident;
+                        @endphp
+
+                        <!-- Header -->
+                        <div class="text-center mb-6">
+                            <div class="flex items-center justify-center gap-3 mb-2">
+                                <svg class="w-8 h-8 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                </svg>
+                                <h3 class="text-2xl font-bold text-zinc-900 dark:text-zinc-100" id="modal-title">
+                                    Edit Profile
+                                </h3>
+                            </div>
+                            <p class="text-sm text-zinc-600 dark:text-zinc-400">Update your personal and vehicle information (changes require admin approval)</p>
+                        </div>
+                        
+                        <!-- Form -->
+                        <form action="{{ route('resident.profile.update') }}" method="POST" class="space-y-6">
+                            @csrf
+                            @method('PUT')
+
+                            <!-- Personal Information Section -->
+                            <div>
+                                <div class="flex items-center gap-2 mb-4">
+                                    <svg class="w-6 h-6 text-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                    </svg>
+                                    <h3 class="text-lg font-semibold text-zinc-900 dark:text-zinc-100">Personal Information</h3>
+                                </div>
+
+                                <div class="space-y-4">
+                                    <!-- Full Name -->
+                                    <div>
+                                        <label for="modal_name" class="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">Full Name *</label>
+                                        <input type="text" id="modal_name" name="name" value="{{ old('name', $resident->name) }}" required 
+                                            class="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition @error('name') border-red-500 @enderror">
+                                        @error('name')
+                                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+
+                                    <!-- Age -->
+                                    <div>
+                                        <label for="modal_age" class="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">Age</label>
+                                        <input type="number" id="modal_age" name="age" value="{{ old('age', $resident->age) }}" min="1" max="150"
+                                            class="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition @error('age') border-red-500 @enderror">
+                                        @error('age')
+                                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+
+                                    <!-- Contact Number -->
+                                    <div>
+                                        <label for="modal_contact_number" class="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">Contact Number *</label>
+                                        <input type="tel" id="modal_contact_number" name="contact_number" value="{{ old('contact_number', $resident->contact_number) }}" required
+                                            class="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition @error('contact_number') border-red-500 @enderror">
+                                        @error('contact_number')
+                                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+
+                                    <!-- Address -->
+                                    <div>
+                                        <label for="modal_address" class="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">Address *</label>
+                                        <textarea id="modal_address" name="address" rows="3" required
+                                            class="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition @error('address') border-red-500 @enderror">{{ old('address', $resident->address) }}</textarea>
+                                        @error('address')
+                                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Vehicle Information Section -->
+                            <div>
+                                <div class="flex items-center gap-2 mb-4">
+                                    <svg class="w-6 h-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM15 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 00-1 1v10a1 1 0 001 1h1.05a2.5 2.5 0 014.9 0H10a1 1 0 001-1V5a1 1 0 00-1-1H3zM14 7a1 1 0 00-1 1v6.05A2.5 2.5 0 0115.95 16H17a1 1 0 001-1v-5a1 1 0 00-.293-.707l-2-2A1 1 0 0015 7h-1z" />
+                                    </svg>
+                                    <h3 class="text-lg font-semibold text-zinc-900 dark:text-zinc-100">Vehicle Information</h3>
+                                </div>
+
+                                <div class="space-y-4">
+                                    <!-- Plate Number -->
+                                    <div>
+                                        <label for="modal_plate_number" class="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">Plate Number *</label>
+                                        <input type="text" id="modal_plate_number" name="plate_number" value="{{ old('plate_number', $resident->plate_number) }}" required
+                                            class="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition uppercase font-mono @error('plate_number') border-red-500 @enderror">
+                                        @error('plate_number')
+                                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+
+                                    <!-- Car Model -->
+                                    <div>
+                                        <label for="modal_car_model" class="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">Car Model</label>
+                                        <input type="text" id="modal_car_model" name="car_model" value="{{ old('car_model', $resident->car_model) }}"
+                                            class="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition @error('car_model') border-red-500 @enderror">
+                                        @error('car_model')
+                                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+
+                                    <!-- Car Color -->
+                                    <div>
+                                        <label for="modal_car_color" class="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">Car Color</label>
+                                        <input type="text" id="modal_car_color" name="car_color" value="{{ old('car_color', $resident->car_color) }}"
+                                            class="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition @error('car_color') border-red-500 @enderror">
+                                        @error('car_color')
+                                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Action Buttons -->
+                            <div class="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-6 border-t border-zinc-200 dark:border-zinc-700">
+                                <button 
+                                    type="button" 
+                                    @click="showProfileModal = false" 
+                                    class="px-6 py-3 text-sm font-medium text-zinc-900 dark:text-zinc-100 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors">
+                                    Cancel
+                                </button>
+                                <button 
+                                    type="submit" 
+                                    class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors shadow-sm hover:shadow-md">
+                                    Submit Changes
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Success Modal -->
+        <div x-show="showSuccessModal" 
+             x-cloak 
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0 scale-95"
+             x-transition:enter-end="opacity-100 scale-100"
+             x-transition:leave="transition ease-in duration-300"
+             x-transition:leave-start="opacity-100 scale-100"
+             x-transition:leave-end="opacity-0 scale-95"
+             class="fixed inset-0 z-50 overflow-y-auto" 
+             aria-labelledby="success-modal-title" 
+             role="dialog" 
+             aria-modal="true">
+            <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:p-0">
+                <div class="fixed inset-0 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-sm transition-opacity"></div>
+                <div class="relative inline-block align-middle bg-white dark:bg-zinc-800 rounded-2xl text-center overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:max-w-md sm:w-full">
+                    <div class="px-8 pt-10 pb-8">
+                        <!-- Success Icon -->
+                        <div class="flex justify-center mb-6">
+                            <div class="relative">
+                                <svg class="w-20 h-20 text-green-600 dark:text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <!-- Decorative dots -->
+                                <div class="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full animate-ping"></div>
+                                <div class="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full"></div>
+                                <div class="absolute top-2 -left-2 w-2 h-2 bg-green-400 rounded-full"></div>
+                                <div class="absolute -bottom-1 left-2 w-2 h-2 bg-green-400 rounded-full"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Success Message -->
+                        <h3 class="text-xl font-semibold text-zinc-900 dark:text-zinc-100 mb-4" id="success-modal-title">
+                            Profile update submitted successfully!
+                        </h3>
+                        @if(session()->has('success_timestamp'))
+                            <p class="text-sm text-zinc-600 dark:text-zinc-400 mb-8">
+                                Submitted on {{ session('success_timestamp')->format('F d, Y \a\t g:i A') }}
+                            </p>
+                        @else
+                            <p class="text-sm text-zinc-600 dark:text-zinc-400 mb-8">
+                                Submitted on {{ now()->format('F d, Y \a\t g:i A') }}
+                            </p>
+                        @endif
+                    </div>
+                </div>
             </div>
         </div>
     </div>

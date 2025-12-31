@@ -11,122 +11,177 @@
 
         @php
             $resident = auth()->user()->resident;
+            $nameParts = explode(' ', $resident->name ?? '');
+            $initials = strtoupper(substr($nameParts[0] ?? '', 0, 1) . substr($nameParts[1] ?? '', 0, 1));
         @endphp
+
+        <!-- Profile Header Card -->
+        <div class="bg-gradient-to-r from-blue-600 to-blue-700 dark:from-blue-800 dark:to-blue-900 rounded-2xl p-8 mb-6 shadow-lg">
+            <div class="flex items-center gap-6">
+                <div class="relative">
+                    <div class="w-24 h-24 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center text-white text-3xl font-bold border-4 border-white/30">
+                        {{ $initials ?: 'U' }}
+                    </div>
+                    <button class="absolute bottom-0 right-0 w-8 h-8 bg-white hover:bg-zinc-100 rounded-full flex items-center justify-center text-blue-600 shadow-lg transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="flex-1">
+                    <h2 class="text-3xl font-bold text-white mb-2">{{ $resident->name }}</h2>
+                    <p class="text-blue-100 text-lg">Resident Member</p>
+                    <div class="flex items-center gap-2 mt-3">
+                        <div class="w-2 h-2 bg-green-300 rounded-full animate-pulse"></div>
+                        <span class="text-white/90 text-sm">Active Account</span>
+                    </div>
+                </div>
+                <button @click="showEditModal = true" class="px-6 py-3 bg-white hover:bg-zinc-50 text-blue-600 rounded-xl text-sm font-semibold transition shadow-lg hover:shadow-xl">
+                    <svg class="w-5 h-5 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
+                    Edit Profile
+                </button>
+            </div>
+        </div>
 
         <div class="grid gap-6 lg:grid-cols-3">
             <!-- Profile Card -->
-            <div class="lg:col-span-2 border border-zinc-200 dark:border-zinc-700 rounded-xl p-6 bg-white dark:bg-zinc-800">
-                <div class="flex items-start justify-between mb-6">
-                    <h2 class="text-xl font-semibold text-zinc-900 dark:text-zinc-100">Personal Information</h2>
-                    <button @click="showEditModal = true" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition">
-                        ✏️ Edit Profile
-                    </button>
+            <div class="lg:col-span-2 border border-zinc-200 dark:border-zinc-700 rounded-2xl p-8 bg-white dark:bg-zinc-800 shadow-sm hover:shadow-md transition-shadow">
+                <div class="flex items-center gap-3 mb-8">
+                    <div class="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                        <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                    </div>
+                    <h2 class="text-2xl font-bold text-zinc-900 dark:text-zinc-100">Personal Information</h2>
                 </div>
 
                 <div class="grid gap-6 md:grid-cols-2">
                     <!-- First Name -->
-                    <div>
-                        <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 uppercase mb-2">First Name</label>
-                        <p class="text-lg font-medium text-zinc-900 dark:text-zinc-100">{{ explode(' ', $resident->name)[0] ?? $resident->name }}</p>
-                    </div>
-
-                    <!-- Middle Name -->
-                    <div>
-                        <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 uppercase mb-2">Middle Name</label>
-                        <p class="text-lg font-medium text-zinc-900 dark:text-zinc-100">-</p>
+                    <div class="bg-zinc-50 dark:bg-zinc-900/50 rounded-xl p-4 border border-zinc-100 dark:border-zinc-700">
+                        <label class="block text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase mb-2">First Name</label>
+                        <p class="text-lg font-semibold text-zinc-900 dark:text-zinc-100">{{ explode(' ', $resident->name)[0] ?? $resident->name }}</p>
                     </div>
 
                     <!-- Last Name -->
-                    <div>
-                        <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 uppercase mb-2">Last Name</label>
-                        <p class="text-lg font-medium text-zinc-900 dark:text-zinc-100">{{ implode(' ', array_slice(explode(' ', $resident->name), 1)) ?? '-' }}</p>
+                    <div class="bg-zinc-50 dark:bg-zinc-900/50 rounded-xl p-4 border border-zinc-100 dark:border-zinc-700">
+                        <label class="block text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase mb-2">Last Name</label>
+                        <p class="text-lg font-semibold text-zinc-900 dark:text-zinc-100">{{ implode(' ', array_slice(explode(' ', $resident->name), 1)) ?? '-' }}</p>
                     </div>
 
                     <!-- Age -->
-                    <div>
-                        <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 uppercase mb-2">Age</label>
-                        <p class="text-lg font-medium text-zinc-900 dark:text-zinc-100">{{ $resident->age ?? '-' }}</p>
-                    </div>
-
-                    <!-- Gender -->
-                    <div>
-                        <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 uppercase mb-2">Gender</label>
-                        <p class="text-lg font-medium text-zinc-900 dark:text-zinc-100">-</p>
-                    </div>
-
-                    <!-- Birthdate -->
-                    <div>
-                        <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 uppercase mb-2">Birthdate</label>
-                        <p class="text-lg font-medium text-zinc-900 dark:text-zinc-100">-</p>
+                    <div class="bg-zinc-50 dark:bg-zinc-900/50 rounded-xl p-4 border border-zinc-100 dark:border-zinc-700">
+                        <label class="block text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase mb-2">Age</label>
+                        <p class="text-lg font-semibold text-zinc-900 dark:text-zinc-100">{{ $resident->age ?? '-' }}</p>
                     </div>
 
                     <!-- Contact Number -->
-                    <div>
-                        <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 uppercase mb-2">Contact Number</label>
-                        <p class="text-lg font-medium text-zinc-900 dark:text-zinc-100">{{ $resident->contact_number ?? '-' }}</p>
+                    <div class="bg-zinc-50 dark:bg-zinc-900/50 rounded-xl p-4 border border-zinc-100 dark:border-zinc-700">
+                        <label class="block text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase mb-2">Contact Number</label>
+                        <p class="text-lg font-semibold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
+                            <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                            </svg>
+                            {{ $resident->contact_number ?? '-' }}
+                        </p>
                     </div>
 
                     <!-- Address -->
-                    <div>
-                        <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 uppercase mb-2">Address</label>
-                        <p class="text-lg font-medium text-zinc-900 dark:text-zinc-100">{{ $resident->address ?? '-' }}</p>
+                    <div class="bg-zinc-50 dark:bg-zinc-900/50 rounded-xl p-4 border border-zinc-100 dark:border-zinc-700 md:col-span-2">
+                        <label class="block text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase mb-2">Address</label>
+                        <p class="text-lg font-semibold text-zinc-900 dark:text-zinc-100 flex items-start gap-2">
+                            <svg class="w-5 h-5 text-blue-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                            <span>{{ $resident->address ?? '-' }}</span>
+                        </p>
                     </div>
                 </div>
 
-                <hr class="my-6 border-zinc-200 dark:border-zinc-700">
-
-                <h3 class="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mb-4">🚗 Vehicle Information</h3>
-
-                <div class="grid gap-6 md:grid-cols-2">
-                    <!-- Plate Number -->
-                    <div>
-                        <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 uppercase mb-2">Plate Number</label>
-                        <p class="text-lg font-medium text-zinc-900 dark:text-zinc-100 font-mono bg-zinc-100 dark:bg-zinc-700 p-3 rounded">{{ $resident->plate_number ?? '-' }}</p>
+                <div class="my-8 border-t border-zinc-200 dark:border-zinc-700 pt-8">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-10 h-10 rounded-lg bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
+                            <svg class="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM15 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 00-1 1v10a1 1 0 001 1h1.05a2.5 2.5 0 014.9 0H10a1 1 0 001-1V5a1 1 0 00-1-1H3zM14 7a1 1 0 00-1 1v6.05A2.5 2.5 0 0115.95 16H17a1 1 0 001-1v-5a1 1 0 00-.293-.707l-2-2A1 1 0 0015 7h-1z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-2xl font-bold text-zinc-900 dark:text-zinc-100">Vehicle Information</h3>
                     </div>
 
-                    <!-- Car Model -->
-                    <div>
-                        <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 uppercase mb-2">Car Model</label>
-                        <p class="text-lg font-medium text-zinc-900 dark:text-zinc-100">{{ $resident->car_model ?? '-' }}</p>
-                    </div>
+                    <div class="grid gap-6 md:grid-cols-2">
+                        <!-- Plate Number -->
+                        <div class="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-xl p-5 border-2 border-blue-200 dark:border-blue-800">
+                            <label class="block text-xs font-semibold text-blue-600 dark:text-blue-400 uppercase mb-3">Plate Number</label>
+                            <p class="text-2xl font-bold text-blue-900 dark:text-blue-100 font-mono tracking-wider">{{ $resident->plate_number ?? '-' }}</p>
+                        </div>
 
-                    <!-- Car Color -->
-                    <div>
-                        <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 uppercase mb-2">Car Color</label>
-                        <p class="text-lg font-medium text-zinc-900 dark:text-zinc-100">{{ $resident->car_color ?? '-' }}</p>
+                        <!-- Car Model -->
+                        <div class="bg-zinc-50 dark:bg-zinc-900/50 rounded-xl p-5 border border-zinc-100 dark:border-zinc-700">
+                            <label class="block text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase mb-2">Car Model</label>
+                            <p class="text-lg font-semibold text-zinc-900 dark:text-zinc-100">{{ $resident->car_model ?? '-' }}</p>
+                        </div>
+
+                        <!-- Car Color -->
+                        <div class="bg-zinc-50 dark:bg-zinc-900/50 rounded-xl p-5 border border-zinc-100 dark:border-zinc-700">
+                            <label class="block text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase mb-2">Car Color</label>
+                            <p class="text-lg font-semibold text-zinc-900 dark:text-zinc-100">{{ $resident->car_color ?? '-' }}</p>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- Account Info Sidebar -->
-            <div class="border border-zinc-200 dark:border-zinc-700 rounded-xl p-6 bg-white dark:bg-zinc-800 h-fit">
-                <h3 class="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mb-4">Account Information</h3>
+            <div class="border border-zinc-200 dark:border-zinc-700 rounded-2xl p-6 bg-white dark:bg-zinc-800 h-fit shadow-sm">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-10 h-10 rounded-lg bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+                        <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-zinc-900 dark:text-zinc-100">Account Information</h3>
+                </div>
                 
-                <div class="space-y-4">
-                    <div>
-                        <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 uppercase mb-1">Email</label>
-                        <p class="text-sm text-zinc-900 dark:text-zinc-100">{{ auth()->user()->email }}</p>
+                <div class="space-y-5">
+                    <div class="bg-zinc-50 dark:bg-zinc-900/50 rounded-xl p-4 border border-zinc-100 dark:border-zinc-700">
+                        <label class="block text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase mb-2">Email</label>
+                        <p class="text-sm font-semibold text-zinc-900 dark:text-zinc-100 break-all flex items-center gap-2">
+                            <svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                            </svg>
+                            {{ auth()->user()->email }}
+                        </p>
                     </div>
 
-                    <div>
-                        <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 uppercase mb-1">Member Since</label>
-                        <p class="text-sm text-zinc-900 dark:text-zinc-100">{{ auth()->user()->created_at->format('M d, Y') }}</p>
+                    <div class="bg-zinc-50 dark:bg-zinc-900/50 rounded-xl p-4 border border-zinc-100 dark:border-zinc-700">
+                        <label class="block text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase mb-2">Member Since</label>
+                        <p class="text-sm font-semibold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
+                            <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            {{ auth()->user()->created_at->format('M d, Y') }}
+                        </p>
                     </div>
 
-                    <div>
-                        <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 uppercase mb-1">Access Status</label>
-                        <div class="flex items-center gap-2 mt-1">
-                            <div class="w-2 h-2 bg-green-600 rounded-full"></div>
-                            <p class="text-sm text-green-600 dark:text-green-400 font-medium">Active</p>
+                    <div class="bg-green-50 dark:bg-green-900/20 rounded-xl p-4 border-2 border-green-200 dark:border-green-800">
+                        <label class="block text-xs font-semibold text-green-600 dark:text-green-400 uppercase mb-2">Access Status</label>
+                        <div class="flex items-center gap-2">
+                            <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                            <p class="text-sm font-bold text-green-700 dark:text-green-400">Active</p>
                         </div>
                     </div>
                 </div>
 
-                <hr class="my-4 border-zinc-200 dark:border-zinc-700">
-
-                <button @click="showEditModal = true" class="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-center rounded-lg text-sm font-medium transition">
-                    Edit Information
-                </button>
+                <div class="mt-6 pt-6 border-t border-zinc-200 dark:border-zinc-700">
+                    <button @click="showEditModal = true" class="w-full px-4 py-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white text-center rounded-xl text-sm font-semibold transition shadow-md hover:shadow-lg flex items-center justify-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                        </svg>
+                        Edit Information
+                    </button>
+                </div>
             </div>
         </div>
 

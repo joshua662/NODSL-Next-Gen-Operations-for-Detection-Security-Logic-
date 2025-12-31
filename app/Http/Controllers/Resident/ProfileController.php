@@ -69,14 +69,15 @@ class ProfileController extends Controller
         }
 
         // Create update request
-        UpdateRequest::create([
+        $updateRequest = UpdateRequest::create([
             'resident_id' => $resident->id,
             'status' => 'pending',
             'requested_changes' => $requestedChanges,
         ]);
 
         return redirect()->route('resident.update-requests')
-            ->with('success', 'Your profile changes have been submitted for admin approval. You will be notified once they are processed.');
+            ->with('success', 'Your profile changes have been submitted for admin approval. You will be notified once they are processed.')
+            ->with('success_timestamp', $updateRequest->created_at);
     }
 
     /**
