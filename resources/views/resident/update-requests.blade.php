@@ -13,10 +13,9 @@
             $updateRequests = auth()->user()->resident->updateRequests()->latest()->paginate(10);
         @endphp
 
-        <!-- Two Action Cards Section -->
-        <div class="grid md:grid-cols-2 gap-6 mb-6">
-            <!-- Profile Update Card -->
-            <div class="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/30 dark:to-blue-900/50 border-2 border-blue-200 dark:border-blue-700 rounded-xl p-6">
+        <!-- Profile Update Card Section -->
+        <div class="mb-6">
+            <div class="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/30 dark:to-blue-900/50 border-2 border-blue-200 dark:border-blue-700 rounded-xl p-6 w-full">
                 <div class="flex items-start justify-between mb-4">
                     <div>
                         <h3 class="text-xl font-bold text-blue-900 dark:text-blue-100">📝 Update Profile</h3>
@@ -37,44 +36,6 @@
                         <path d="M10.5 1.5H19a1 1 0 011 1v16a1 1 0 01-1 1H1a1 1 0 01-1-1V2.5a1 1 0 011-1h9m0 0V1a1 1 0 112 0v.5m0 0a1 1 0 112 0"/>
                     </svg>
                     Submit Profile Update
-                </a>
-            </div>
-
-            <!-- Guest Access Card -->
-            <div class="bg-gradient-to-br from-purple-600 to-purple-700 dark:from-purple-800 dark:to-purple-900 border-2 border-purple-400 dark:border-purple-600 rounded-xl p-6 shadow-lg">
-                <div class="flex items-start justify-between mb-4">
-                    <div>
-                        <h3 class="text-xl font-bold text-white">🚗 Request Guest Access</h3>
-                        <p class="text-sm text-purple-100 dark:text-purple-200 mt-1">Allow visitor vehicles to enter</p>
-                    </div>
-                    <span class="inline-block px-3 py-1 bg-purple-400 dark:bg-purple-600 text-white text-xs font-bold rounded-full">Visitor</span>
-                </div>
-                
-                <ul class="text-sm text-white space-y-2 mb-6">
-                    <li class="flex items-center gap-2">
-                        <span class="text-white">✓</span>
-                        <span>Allow guest vehicles to pass gate</span>
-                    </li>
-                    <li class="flex items-center gap-2">
-                        <span class="text-white">✓</span>
-                        <span>Capture visitor vehicle info</span>
-                    </li>
-                    <li class="flex items-center gap-2">
-                        <span class="text-white">✓</span>
-                        <span>Set specific access dates</span>
-                    </li>
-                    <li class="flex items-center gap-2">
-                        <span class="text-white">✓</span>
-                        <span>Requires admin approval</span>
-                    </li>
-                </ul>
-                
-                <a href="{{ route('resident.guest-access.create') }}" class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-purple-500 hover:bg-purple-400 dark:bg-purple-700 dark:hover:bg-purple-600 text-white rounded-lg font-semibold transition w-full shadow-md hover:shadow-lg">
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M8 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM15 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"/>
-                        <path d="M3 4a1 1 0 00-1 1v10a1 1 0 001 1h1.05a2.5 2.5 0 014.9 0H10a1 1 0 001-1V5a1 1 0 00-1-1H3zM14 7a1 1 0 00-1 1v6.05A2.5 2.5 0 0115.95 16H17a1 1 0 001-1v-5a1 1 0 00-.293-.707l-2-2A1 1 0 0015 7h-1z"/>
-                    </svg>
-                    Request Guest Access
                 </a>
             </div>
         </div>
@@ -289,9 +250,8 @@
         </div>
 
         <!-- Help Section -->
-        <div class="mt-8 grid md:grid-cols-2 gap-6">
-            <!-- Profile Update Help -->
-            <div class="p-6 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+        <div class="mt-8">
+            <div class="p-6 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg w-full">
                 <h3 class="text-lg font-semibold text-blue-900 dark:text-blue-200 mb-3">📝 Profile Update Guide</h3>
                 <ol class="text-sm text-blue-800 dark:text-blue-300 space-y-2 list-decimal list-inside">
                     <li>Click "Submit Profile Update" button</li>
@@ -299,18 +259,6 @@
                     <li>Submit changes for admin review</li>
                     <li>Wait for approval notification</li>
                     <li>Changes become active once approved</li>
-                </ol>
-            </div>
-
-            <!-- Guest Access Help -->
-            <div class="p-6 bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-lg">
-                <h3 class="text-lg font-semibold text-purple-900 dark:text-purple-200 mb-3">🚗 Guest Access Guide</h3>
-                <ol class="text-sm text-purple-800 dark:text-purple-300 space-y-2 list-decimal list-inside">
-                    <li>Click "Request Guest Access" button</li>
-                    <li>Fill in guest vehicle owner details</li>
-                    <li>Enter guest vehicle information</li>
-                    <li>Set access date and reason</li>
-                    <li>Submit for admin approval</li>
                 </ol>
             </div>
         </div>
