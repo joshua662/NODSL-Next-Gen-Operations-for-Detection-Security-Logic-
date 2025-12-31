@@ -75,9 +75,8 @@ class ProfileController extends Controller
             'requested_changes' => $requestedChanges,
         ]);
 
-        return redirect()->route('resident.update-requests')
-            ->with('success', 'Your profile changes have been submitted for admin approval. You will be notified once they are processed.')
-            ->with('success_timestamp', $updateRequest->created_at);
+        return redirect()->route('resident.profile.show')
+            ->with('success', 'Your profile changes have been submitted for admin approval. You will be notified once they are processed.');
     }
 
     /**
@@ -115,7 +114,7 @@ class ProfileController extends Controller
             ]),
         ]);
 
-        return redirect()->route('resident.update-requests')
+        return redirect()->route('resident.guest-access.create')
             ->with('success', 'Your guest access request has been submitted for admin approval. The visitor will be able to enter once approved.');
     }
 }

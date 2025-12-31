@@ -73,11 +73,7 @@ Route::middleware(['auth', 'verified', 'resident'])->prefix('resident')->name('r
     
     Route::post('notifications/{notification}/mark-read', [\App\Http\Controllers\Resident\NotificationController::class, 'markAsRead'])->name('notifications.mark-read');
     Route::post('notifications/mark-all-read', [\App\Http\Controllers\Resident\NotificationController::class, 'markAllAsRead'])->name('notifications.mark-all-read');
-    
-    Route::get('update-requests', function () {
-        return view('resident.update-requests');
-    })->name('update-requests');
-    
+
     Route::get('help', function () {
         return view('resident.help');
     })->name('help');

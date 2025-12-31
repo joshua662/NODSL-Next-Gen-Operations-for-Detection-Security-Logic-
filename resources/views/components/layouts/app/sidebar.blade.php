@@ -28,7 +28,6 @@
                         <flux:navlist.item icon="user" :href="route('resident.profile.show')" :current="request()->routeIs('resident.profile.*')" wire:navigate>{{ __('My Profile') }}</flux:navlist.item>
                         <flux:navlist.item icon="chart-bar" :href="route('resident.gate-logs')" :current="request()->routeIs('resident.gate-logs')" wire:navigate>{{ __('Gate Logs') }}</flux:navlist.item>
                         <flux:navlist.item icon="bell" :href="route('resident.notifications')" :current="request()->routeIs('resident.notifications')" wire:navigate>{{ __('Notifications') }}</flux:navlist.item>
-                        <flux:navlist.item icon="document-check" :href="route('resident.update-requests')" :current="request()->routeIs('resident.update-requests')" wire:navigate>{{ __('Update Requests') }}</flux:navlist.item>
                         <flux:navlist.item icon="document-plus" :href="route('resident.guest-access.create')" :current="request()->routeIs('resident.guest-access.*')" wire:navigate>{{ __('Guest Access') }}</flux:navlist.item>
                         <flux:navlist.item icon="question-mark-circle" :href="route('resident.help')" :current="request()->routeIs('resident.help')" wire:navigate>{{ __('Help & Support') }}</flux:navlist.item>
                     @endif

@@ -112,11 +112,11 @@
                             <p class="text-xs text-zinc-500 dark:text-zinc-400">IN/OUT history</p>
                         </div>
                     </a>
-                    <a href="{{ route('resident.update-requests') }}" class="flex items-center gap-3 p-3 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded-lg transition">
-                        <span class="text-xl">📤</span>
+                    <a href="{{ route('resident.guest-access.create') }}" class="flex items-center gap-3 p-3 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded-lg transition">
+                        <span class="text-xl">🚗</span>
                         <div>
-                            <p class="text-sm font-medium text-zinc-900 dark:text-zinc-100">Update Request</p>
-                            <p class="text-xs text-zinc-500 dark:text-zinc-400">Track status</p>
+                            <p class="text-sm font-medium text-zinc-900 dark:text-zinc-100">Guest Access</p>
+                            <p class="text-xs text-zinc-500 dark:text-zinc-400">Request visitor access</p>
                         </div>
                     </a>
                 </div>

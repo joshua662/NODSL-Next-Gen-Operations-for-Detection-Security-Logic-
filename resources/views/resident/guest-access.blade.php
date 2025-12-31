@@ -171,7 +171,7 @@
                         </svg>
                         Submit Guest Access Request
                     </button>
-                    <a href="{{ route('resident.update-requests') }}" class="px-6 py-3 border border-zinc-300 dark:border-zinc-600 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded-lg font-medium transition">
+                    <a href="{{ route('resident.profile.show') }}" class="px-6 py-3 border border-zinc-300 dark:border-zinc-600 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded-lg font-medium transition">
                         Cancel
                     </a>
                 </div>
